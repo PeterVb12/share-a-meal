@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/user.controller')
+const assert = require('assert')
 
 
 // Tijdelijke functie om niet bestaande routes op te vangen
@@ -17,11 +18,14 @@ function validateUserCreateAssert(req, res, next) {
 
     try {
         // Controleren of alle vereiste velden aanwezig zijn in de gebruikersinvoer
-        assert(user.name, 'Naam is vereist');
-        assert(user.email, 'E-mail is vereist');
-        assert(user.password, 'Wachtwoord is vereist');
+        assert(user.firstName, 'Name is required');
+        assert(user.lastName, 'Last name is required');
+        assert(user.emailAddress, 'E-mail is required');
         
-        // Extra validatievoorwaarden kunnen hier worden toegevoegd met assert
+        
+        // Controleren of het e-mailadres een geldig formaat heeft
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        assert(emailRegex.test(user.emailAddress), 'Invalid email address');
 
         // Als alle vereisten zijn voldaan, ga door naar de volgende middleware (userController.create)
         next();
@@ -34,10 +38,21 @@ function validateUserCreateAssert(req, res, next) {
         });
     }
 }
+
 // Userroutes
-router.post('/api/users',validateUserCreateAssert, userController.create)
-router.get('/api/users', userController.getAll)
-router.get('/api/users/:userId', userController.getById)
+//use case 201
+router.post('/api/user',validateUserCreateAssert, userController.create)
+
+//use case 202 AF
+router.get('/api/user/getall', userController.getAll)
+router.get('/api/user/getall/active', userController.getAllActive)
+router.get('/api/user/getall/inactive', userController.getAllInactive)
+
+//use case 204
+router.get('/api/user/userId', userController.getById)
+
+//use case 205
+router.put('/api/user/:userId', validateUserCreateAssert, userController.updateUser)
 
 // Tijdelijke routes om niet bestaande routes op te vangen
 router.put('/api/users/:userId', notFound)
