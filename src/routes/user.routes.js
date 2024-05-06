@@ -49,10 +49,13 @@ router.get('/api/user/getall/active', userController.getAllActive)
 router.get('/api/user/getall/inactive', userController.getAllInactive)
 
 //use case 204
-router.get('/api/user/userId', userController.getById)
+router.get('/api/user/:userId', userController.getById)
 
 //use case 205
 router.put('/api/user/:userId', validateUserCreateAssert, userController.updateUser)
+
+//use case 206
+router.delete('/api/users/:userId', userController.delete)
 
 // Tijdelijke routes om niet bestaande routes op te vangen
 router.put('/api/users/:userId', notFound)

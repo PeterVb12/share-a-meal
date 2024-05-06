@@ -70,6 +70,17 @@ const database = {
         }, this._delayTime)
     },
 
+    delete(id, callback) {
+        // Simuleer een asynchrone operatie
+        setTimeout(() => {
+            if (id < 0 || id >= this._data.length) {
+                callback({ message: `Error: id ${id} does not exist!` }, null)
+            } else {
+                this._data.splice(id, 1)
+            }
+        }, this._delayTime)
+    },
+
     add(item, callback) {
         // Simuleer een asynchrone operatie
         setTimeout(() => {
@@ -87,19 +98,11 @@ const database = {
     updateUser(id, updatedUser, callback) {
         // Simuleer een asynchrone operatie
         setTimeout(() => {
-            // Zoek de index van de gebruiker met de opgegeven ID in de _data-array
-            const index = this._data.findIndex(user => user.id === parseInt(id));
-            console.log(index)
-            // Controleer of de gebruiker met de opgegeven ID is gevonden
-            if (index === -1) {
-                // Als de gebruiker niet is gevonden, retourneer een foutbericht via de callback
-                callback({ message: `Error: User with id ${id} not found!` }, null);
+            if (id < 0 || id >= this._data.length) {
+                callback({ message: `Error: id ${id} does not exist!` }, null)
             } else {
-                // Als de gebruiker is gevonden, bijwerk de gebruiker met de nieuwe gegevens
-                this._data[index] = { ...this._data[index], ...updatedUser };
-
-                // Retourneer de bijgewerkte gebruiker via de callback
-                callback(null, this._data[index]);
+                this._data[id] = updatedUser;
+                callback(null, this._data[id])
             }
         }, this._delayTime);
     }
