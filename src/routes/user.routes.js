@@ -39,14 +39,14 @@ function validateUserCreateAssert(req, res, next) {
     }
 }
 
-// Userroutes
+// routes
 //use case 201
 router.post('/api/user',validateUserCreateAssert, userController.create)
 
-//use case 202 AF
-router.get('/api/user/getall', userController.getAll)
-router.get('/api/user/getall/active', userController.getAllActive)
-router.get('/api/user/getall/inactive', userController.getAllInactive)
+//use case 202
+router.get('/api/user', userController.getAll)
+router.get('/api/user/active', userController.getAllActive)
+router.get('/api/user/inactive', userController.getAllInactive)
 
 //use case 204
 router.get('/api/user/:userId', userController.getById)
@@ -55,10 +55,6 @@ router.get('/api/user/:userId', userController.getById)
 router.put('/api/user/:userId', validateUserCreateAssert, userController.updateUser)
 
 //use case 206
-router.delete('/api/users/:userId', userController.delete)
-
-// Tijdelijke routes om niet bestaande routes op te vangen
-router.put('/api/users/:userId', notFound)
-router.delete('/api/users/:userId', notFound)
+router.delete('/api/user/:userId', userController.delete)
 
 module.exports = router
