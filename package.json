@@ -23,7 +23,8 @@
         "tabWidth": 4
     },
     "dependencies": {
-        "express": "^4.19.2"
+        "express": "^4.19.2",
+        "mysql2": "^3.9.7"
     },
     "devDependencies": {
         "chai": "^5.1.0",
