@@ -89,7 +89,7 @@ jobs:
               env:
                   RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
               run: |
-                  ~/.render/render deployments create \
+                  $HOME/.render/bin/render deployments create \
                     --service-id ${{ secrets.RENDER_SERVICE_ID }} \
                     --branch main \
                     --wait
