@@ -73,20 +73,8 @@ jobs:
     deploy:
         needs: build
         runs-on: ubuntu-latest
+        if: success()
 
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-
-            - name: Download Render CLI
-              run: |
-                  curl -fsSL https://cdn.render.com/cli/install.sh | sh
-
-            - name: Deploy to Render
-              env:
-                  RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-              run: |
-                  $HOME/.render/bin/render deployments create \
-                    --service-id ${{ secrets.RENDER_SERVICE_ID }} \
-                    --branch main \
-                    --wait
+            - name: Trigger Render deploy
+              run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
