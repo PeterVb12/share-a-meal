@@ -80,7 +80,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Install Render CLI
-              run: npm install -g render-cli
+              run: curl -fsSL https://cdn.render.com/cli/install.sh | sh
 
             - name: Deploy to Render
               env:
