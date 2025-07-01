@@ -75,21 +75,21 @@ jobs:
         needs: build
         runs-on: ubuntu-latest
 
-    steps:
-        - name: Checkout repo
-          uses: actions/checkout@v4
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
 
-        - name: Install Render CLI (correcte versie)
-          run: curl -fsSL https://cdn.render.com/cli/install.sh | sh
+            - name: Install Render CLI (correcte versie)
+              run: curl -fsSL https://cdn.render.com/cli/install.sh | sh
 
-        - name: Add Render CLI to PATH
-          run: echo "$HOME/.render" >> $GITHUB_PATH
+            - name: Add Render CLI to PATH
+              run: echo "$HOME/.render" >> $GITHUB_PATH
 
-        - name: Deploy to Render
-          env:
-              RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          run: |
-              $HOME/.render/render deployments create \
-                --service-id ${{ secrets.RENDER_SERVICE_ID }} \
-                --branch main \
-                --wait
+            - name: Deploy to Render
+              env:
+                  RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+              run: |
+                  $HOME/.render/render deployments create \
+                    --service-id ${{ secrets.RENDER_SERVICE_ID }} \
+                    --branch main \
+                    --wait
