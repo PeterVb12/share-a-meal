@@ -16,41 +16,41 @@ jobs:
             DB_DATABASE: share_a_meal
             DB_USER: root
             DB_PASSWORD: root
-        services:
-            mysql:
-                image: mysql:5.7
-                ports:
-                    - 3306
-                options: >-
-                    --health-cmd="mysqladmin ping"
-                    --health-interval=10s
-                    --health-timeout=5s
-                    --health-retries=3
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-            - name: Install MySQL client
-              run: sudo apt-get update && sudo apt-get install -y mysql-client
+        - name: Start MySQL container
+          run: |
+              docker run -d --name mysql \
+              -e MYSQL_ROOT_PASSWORD=${{ env.MYSQL_ROOT_PASSWORD }} \
+              -p 3306:3306 mysql:5.7
 
-            - name: Wait for MySQL and Create DB
-              run: |
-                  echo "Waiting for MySQL to be ready..."
-                  sleep 20
-                  mysql -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${{ env.DB_DATABASE }};"
+        - name: Wait for MySQL to be ready
+          run: |
+              until docker exec mysql mysqladmin ping -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} --silent; do
+                echo "Waiting for MySQL to start..."
+                sleep 5
+              done
 
-            - name: Import initial database
-              run: |
-                  mysql -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} ${{ env.DB_DATABASE }} < meal-database-script.sql
-                  mysql -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} ${{ env.DB_DATABASE }} -e "SHOW TABLES;"
+        - name: Wait for MySQL and Create DB
+          run: |
+              echo "Waiting for MySQL to be ready..."
+              sleep 20
+              mysql -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${{ env.DB_DATABASE }};"
 
-            - name: Install dependencies
-              run: npm install
+        - name: Import initial database
+          run: |
+              mysql -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} ${{ env.DB_DATABASE }} < meal-database-script.sql
+              mysql -uroot -p${{ env.MYSQL_ROOT_PASSWORD }} ${{ env.DB_DATABASE }} -e "SHOW TABLES;"
 
-            - name: Run integration tests
-              run: |
-                  npm test -- --DB_PASSWORD $MYSQL_ROOT_PASSWORD --DB_USER root --DB_NAME $DB_DATABASE
+        - name: Install dependencies
+          run: npm install
+
+        - name: Run integration tests
+          run: |
+              npm test -- --DB_PASSWORD $MYSQL_ROOT_PASSWORD --DB_USER root --DB_NAME $DB_DATABASE
 
     build:
         runs-on: ubuntu-latest
