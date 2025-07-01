@@ -82,9 +82,6 @@ jobs:
               run: |
                   curl -fsSL https://cdn.render.com/cli/install.sh | sh
 
-            - name: Add Render CLI to path
-              run: echo "$HOME/.render" >> $GITHUB_PATH
-
             - name: Deploy to Render
               env:
                   RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
